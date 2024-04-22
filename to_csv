@@ -1,0 +1,42 @@
+import json
+import csv
+
+# Load the JSON data
+def load_json_data(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
+
+# Save data to a CSV file
+def save_to_csv(data, output_file):
+    with open(output_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        # Write the header row
+        writer.writerow(['Channel Name', 'Channel ID', 'Video Title', 'Video ID', 'Video URL', 'Views', 'Publish Time'])
+        for channel_id, channel_info in data.items():
+            for video in channel_info['videos']:
+                # Create clickable YouTube URL
+                video_url = f"https://www.youtube.com/watch?v={video['video_id']}"
+                # Write data row for each video
+                writer.writerow([
+                    channel_info['channel_name'],
+                    channel_id,
+                    video['title'],
+                    video['video_id'],
+                    video_url,
+                    video['views'],
+                    video['publish_time']
+                ])
+
+# Main function to load JSON and save to CSV
+def convert_json_to_csv(json_file, csv_file):
+    data = load_json_data(json_file)
+    save_to_csv(data, csv_file)
+
+# Specify your file paths
+json_file_path = 'youtube_channels.json'
+csv_file_path = 'youtube_channels.csv'
+
+# Convert JSON to CSV
+convert_json_to_csv(json_file_path, csv_file_path)
+
+print(f"Data has been successfully converted to CSV and saved to {csv_file_path}")
